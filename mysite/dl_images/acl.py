@@ -93,49 +93,59 @@ wl = [
     'www.bakufu.jp',
     'img.bakufu.jp',
     'bakufu.jp',
-    'minkch.com',
-    'imgs.minkch.com',
-    'ertk.net',
-    'i4.ertk.net',
-    'i1.ertk.net',
-    'i.imgur.com',
-    'gifnuki.com',
-    'img.gifnuki.com'
+    # 'minkch.com',
+    # 'imgs.minkch.com',
+    # 'ertk.net',
+    # 'i4.ertk.net',
+    # 'i1.ertk.net',
+    # 'i.imgur.com',
+    # 'gifnuki.com',
+    # 'img.gifnuki.com'
 ]
 
-def atag(tag):
-    # if tag.has_attr('href'):
-    #     print("tag href : " + tag['href'])
-    # else:
-    #     return False
-    # print(tag)
-    # print(tag.name)
-    if tag.name=='a' and tag.has_attr('href'):
-        # print(tag)
-        # print(tag['href'])
-        url = tag['href']
-        if rg.P_reshapeURL_a.match(url):
-            # print(url)
-            r = re.findall('[^/]+',url)
-            # print(r[0])
-            if not r[0] in wl:
-                return False
-        if rg.P_reshapeURL_e.match(url):
-            # print('#')
-            return False
+# def atag(tag):
+#     # if tag.has_attr('href'):
+#     #     print("tag href : " + tag['href'])
+#     # else:
+#     #     return False
+#     # print(tag)
+#     # print(tag.name)
+#     if tag.name=='a' and tag.has_attr('href'):
+#         # print(tag)
+#         # print(tag['href'])
+#         url = tag['href']
+#         if rg.P_reshapeURL_a.match(url):
+#             # print(url)
+#             r = re.findall('[^/]+',url)
+#             # print(r[0])
+#             if not r[0] in wl:
+#                 return False
+#         if rg.P_reshapeURL_e.match(url):
+#             # print('#')
+#             return False
 
-        r = re.search('https?://',url) 
-        if r:
-            r = re.findall('[^/]+',url)
-            if not r[1] in wl:
-                return False
-        # print(tag['href'])
-        return True
-    return False
+#         r = re.search('https?://',url) 
+#         if r:
+#             r = re.findall('[^/]+',url)
+#             if not r[1] in wl:
+#                 return False
+#         # print(tag['href'])
+#         return True
+#     return False
 
-def imgtag(tag):
-    if tag.name=='img':
-        # print(tag)
-        # print(tag.attrs)
-        return True
-    return False
+# def imgtag(tag):
+#     if tag.name=='img':
+#         if tag.has_attr('src'):
+#             src = tag['src']
+#             if rg.P_reshapeURL_a.match(src):
+#                 r = re.findall('[^/]+',src)
+#                 if not r[0] in wl:
+#                     return False
+#             elif rg.P_reshapeURL_f.match(src):
+#                 r = re.findall('[^/]+',src)
+#                 if not r[1] in wl:
+#                     return False
+#         # print(tag)
+#         # print(tag.attrs)
+#         return True
+#     return False

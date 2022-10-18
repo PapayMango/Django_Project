@@ -5,6 +5,7 @@ import re
 import hashlib
 import dl_images.acl as acl
 import dl_images.regex as rg
+import dl_images.views as vi
 
 count = 0
 def dl(url,depth=0,ulist=[],hlist=[]):
@@ -19,29 +20,73 @@ def dl(url,depth=0,ulist=[],hlist=[]):
 
     processes = 0
     progress = 0
+
     global count 
+
+    def atag(tag):
+
+        if tag.name=='a' and tag.has_attr('href'):
+
+            url = tag['href']
+            if rg.P_reshapeURL_a.match(url):
+
+                r = re.findall('[^/]+',url)
+
+                if not r[0] in acl.wl:
+                    return False
+            if rg.P_reshapeURL_e.match(url):
+                # print('#')
+                return False
+
+            r = re.search('https?://',url) 
+            if r:
+                r = re.findall('[^/]+',url)
+                if not r[1] in acl.wl:
+                    return False
+            # print(tag['href'])
+            return True
+        return False
+
+    def imgtag(tag):
+        if tag.name=='img':
+            if tag.has_attr('src'):
+                src = tag['src']
+                if rg.P_reshapeURL_a.match(src):
+                    r = re.findall('[^/]+',src)
+                    if not r[0] in acl.wl:
+                        return False
+                elif rg.P_reshapeURL_f.match(src):
+                    r = re.findall('[^/]+',src)
+                    if not r[1] in acl.wl:
+                        return False
+            # print(tag)
+            # print(tag.attrs)
+            return True
+        return False
 
     def imageDL(src):
         try:
-
+            if src in hlist_:
+                return False
             r = rg.P_imageDL.search(src).group()
 
             name = image_dir_root + r
             r = req.get(src)
+            hlist_.append(src)
             image = r.content
             size = r.headers.get('content-length',-1)
             print("name : " + name)
             print("src : " + src)
             print("size : " + str(size) + 'bytes')
             if int(size) > 100000:
-                hash = hashlib.sha256(image)
-                if hash in hlist_:
-                    print("hash : " + hash.hexdigest())
-                    return False
-                else:
-                    hlist_.append(hash)
-                    with open(name,'wb') as h:
-                        h.write(image)
+                # hash = hashlib.sha256(image)
+                # if hash in hlist_:
+                    # print("hash : " + hash.hexdigest())
+                #     return False
+                # else:
+                    # hlist_.append(hash)
+                with open(name,'wb') as h:
+                    h.write(image)
         except Exception as e:
             print(e)
             # pass
@@ -81,7 +126,7 @@ def dl(url,depth=0,ulist=[],hlist=[]):
 
             if r and r.group() in ['.png','.jpg','.tif','.gif','.jpeg']:
                 src_ = reshapeSrc(url__)
-                # imageDL(src_)
+                imageDL(src_)
                 return url__,False
                     
                 # url__ = url_ + url__
@@ -117,20 +162,23 @@ def dl(url,depth=0,ulist=[],hlist=[]):
     # print("depth : " + str(depth_))
     # print("url : " + url_)
     # print("list : " + " ".join(list_))
-    # print("hlist : " + " ".join(hlist_))
+    # # print("hlist : " + " ".join(hlist_))
+    # print('hlist len : ' + str(len(hlist_)))
 
     list_.append(url_)
 
     r = req.get(url_)
     s = bs(r.text,'lxml')
-    a = s.find_all(acl.atag)
-    # i = s.find_all('img')
-    i = s.find_all(acl.imgtag)
+    # a = s.find_all(acl.atag)
+    a = s.find_all(atag)
+    # i = s.find_all(acl.imgtag)
+    i = s.find_all(imgtag)
 
-    # print('a : ' + str(len(a)))
-    # print('i : ' + str(len(i)))
+    print('a : ' + str(len(a)))
+    print('i : ' + str(len(i)))
     if depth_ == 0:
         processes = len(a)
+        vi.set_total(processes)
         print('start')
 
     for b in i:
@@ -139,9 +187,9 @@ def dl(url,depth=0,ulist=[],hlist=[]):
             src_ = reshapeSrc(b['data-src'])
         else:    
             src_ = reshapeSrc(b['src'])
-        # imageDL(src_)
+        imageDL(src_)
     for c in a:
-        print("depth : " + str(depth_))
+        # print("depth : " + str(depth_))
         result = reshapeURL(c['href'])
         if result[1] and depth_ < 1 and not result[0] in list_:
             # print('recursive : ' + result[0])
@@ -149,7 +197,9 @@ def dl(url,depth=0,ulist=[],hlist=[]):
             dl(result[0],depth_+1,list_,hlist_)
         if depth_ == 0:
             progress += 1
+            vi.set_process(progress)
             print(' progress ' + str(progress) + ' in ' + str(processes))
+            # vi.ajax(str(progress))
 
     # print("d")
 
