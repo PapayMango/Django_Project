@@ -58,7 +58,7 @@ function startDL(){
         }
     })
 }
-
+var time = 0;
 (function ($) {
     $('#submit').on('click',(event) => {
         // console.log(event)
@@ -67,6 +67,11 @@ function startDL(){
         // console.log('a');
         // startDL();
         // console.log('sa')
+        setInterval(() => {
+            $('#timer').text(time + 's');
+            print(time)
+            time = time +1; 
+        }, 1000);
     })
 })(jQuery);
 
