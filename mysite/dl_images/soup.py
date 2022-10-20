@@ -101,6 +101,8 @@ def dl(url,depth=0,ulist=None,hlist=None):
             tag['href'] = url
                 # print('after : ' + tag['href'])
                 # print('url in tag func : ' + url)
+            if depth_ == max_depth:
+                return False
             return list_.append(url)
         return False
 
@@ -180,7 +182,7 @@ def dl(url,depth=0,ulist=None,hlist=None):
     # print("url : " + url_)
     # print('list tree len : ' + str(len(list_.tree)))
     # print('hlist tree len : ' + str(len(hlist_.tree)))
-    # print('count : ' + str(count))
+    print('count : ' + str(count))
     # print(list_.tree)
     # print('')
     # print('')
@@ -210,30 +212,30 @@ def dl(url,depth=0,ulist=None,hlist=None):
             src_ = reshapeSrc(b['data-src'])
         else:    
             # src_ = reshapeSrc(b['src'])
-            print(b)
+            # print(b)
             src_ = b['src']
         imageDL(src_,False)
-    if depth_ < max_depth:
-        for c in a:
-    # print("depth : " + str(depth_))
-    # result = reshapeURL(c['href'])
-    # if result[1] and depth_ < 1 and not result[0] in list_:
-        # print('recursive : ' + result[0])
-            count += 1
-        # dl(result[0],depth_+1,list_,hlist_)
-        # print(c['href'])
-            dl(c['href'],depth_+1,list_,hlist_)
-            if depth_ == 0:
-                progress += 1
-                vi.set_process(progress)
-                print(' progress ' + str(progress) + ' in ' + str(processes))
+    # if depth_ < max_depth:
+    for c in a:
+# print("depth : " + str(depth_))
+# result = reshapeURL(c['href'])
+# if result[1] and depth_ < 1 and not result[0] in list_:
+    # print('recursive : ' + result[0])
+        count += 1
+    # dl(result[0],depth_+1,list_,hlist_)
+    # print(c['href'])
+        dl(c['href'],depth_+1,list_,hlist_)
+        if depth_ == 0:
+            progress += 1
+            vi.set_process(progress)
+            print(' progress ' + str(progress) + ' in ' + str(processes))
 
     # print("d")
 
     # print("count : " + str(count))
     # print("list length : " + str(len(list_)))
     # print("hash list : " + " ".join(hlist_))
-
+    # count = count -1
     return True
 class tree:
     def __init__(self):
