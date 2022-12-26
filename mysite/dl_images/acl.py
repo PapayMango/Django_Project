@@ -90,11 +90,11 @@ acl = [
 ]
 
 wl = [
-    # 'www.bakufu.jp',
-    # 'img.bakufu.jp',
-    # 'bakufu.jp',
-    'minkch.com',
-    'imgs.minkch.com',
+    'www.bakufu.jp',
+    'img.bakufu.jp',
+    'bakufu.jp',
+    # 'minkch.com',
+    # 'imgs.minkch.com',
     # 'ertk.net',
     # 'i4.ertk.net',
     # 'i1.ertk.net',

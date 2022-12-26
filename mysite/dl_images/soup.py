@@ -7,7 +7,10 @@ import hashlib
 import dl_images.acl as acl
 import dl_images.regex as rg
 import dl_images.views as vi
+import sys
 
+sys.setrecursionlimit(2000)
+print(sys.getrecursionlimit())
 count = 0
 # def dl(url,depth=0,ulist=[],hlist=[]):
 def dl(url,depth=0,ulist=None,hlist=None):
@@ -16,7 +19,7 @@ def dl(url,depth=0,ulist=None,hlist=None):
     image_dir_root = "./png/"
     depth_ = depth
     url_ = url
-    max_depth = 10
+    max_depth = 5
     # a = tree()
     # a.append(url_)
     # print(a.tree)
@@ -207,14 +210,17 @@ def dl(url,depth=0,ulist=None,hlist=None):
         # print('start')
 
     for b in i:
-        if b.has_attr('data-src'):
-            # print('data-src')
-            src_ = reshapeSrc(b['data-src'])
-        else:    
-            # src_ = reshapeSrc(b['src'])
-            # print(b)
-            src_ = b['src']
-        imageDL(src_,False)
+        try:
+            if b.has_attr('data-src'):
+                # print('data-src')
+                src_ = reshapeSrc(b['data-src'])
+            else:    
+                # src_ = reshapeSrc(b['src'])
+                # print(b)
+                src_ = b['src']
+            imageDL(src_,False)
+        except Exception as e:
+            print(e)
     # if depth_ < max_depth:
     for c in a:
 # print("depth : " + str(depth_))
@@ -224,12 +230,14 @@ def dl(url,depth=0,ulist=None,hlist=None):
         count += 1
     # dl(result[0],depth_+1,list_,hlist_)
     # print(c['href'])
-        dl(c['href'],depth_+1,list_,hlist_)
-        if depth_ == 0:
-            progress += 1
-            vi.set_process(progress)
-            print(' progress ' + str(progress) + ' in ' + str(processes))
-
+        try:
+            dl(c['href'],depth_+1,list_,hlist_)
+            if depth_ == 0:
+                progress += 1
+                vi.set_process(progress)
+                print(' progress ' + str(progress) + ' in ' + str(processes))
+        except Exception as e:
+            print(e)
     # print("d")
 
     # print("count : " + str(count))
